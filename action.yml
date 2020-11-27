@@ -1,0 +1,58 @@
+name: Install Cygwin
+description: Install Cygwin & packages
+
+inputs:
+  platform:
+    description: Target platform
+    required: false
+    default: x64
+  install-dir:
+    description: Installation directory
+    required: false
+    default: C:\tools\cygwin
+  packages:
+    description: Packages to install, separated by a space
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - run: |
+        New-Variable os -Value ('${{ runner.os }}') -Option Constant
+
+        New-Variable windows_host -Value ($os -eq 'Windows') -Option Constant
+
+        New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
+        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
+        New-Variable packages -Value '${{ inputs.packages}}' -Option Constant
+
+        if ($windows_host) {
+            echo 'CYGWIN=winsymlinks:nativestrict' >> $env:GITHUB_ENV
+
+            $choco_params = @(
+                'install',
+                '-y',
+                '--no-progress',
+                '--params', "/InstallDir:$install_dir"
+            )
+            if (!$x64) {
+                $choco_params += '--x86'
+            }
+            $choco_params += 'cygwin'
+
+            # Assuming that Cygwin is not installed when this is run.
+            choco.exe $choco_params
+
+            echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
+            # /usr/bin is really just /bin on Cygwin.
+            echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
+
+            $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
+
+            if ($pkg_list.Count -gt 0) {
+                choco.exe install -y --no-progress --source=cygwin $pkg_list
+            }
+        } else {
+            throw "Sorry, installing Cygwin is unsupported on $os"
+        }
+      shell: pwsh

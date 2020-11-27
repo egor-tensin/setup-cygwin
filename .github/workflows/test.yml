@@ -1,0 +1,49 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # Weekly, at 5:45 AM on Friday (somewhat randomly chosen).
+    - cron: '45 5 * * 5'
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2019]
+        platform: [x86, x64]
+
+        include:
+          - {os: windows-2019, name: Windows Server 2019}
+
+    runs-on: '${{ matrix.os }}'
+
+    name: '${{ matrix.name }} / ${{ matrix.platform }}'
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up Cygwin
+        id: setup
+        uses: ./
+        with:
+          platform: '${{ matrix.platform }}'
+          install-dir: C:\cg
+          packages: cmake gcc
+
+      - name: Run bash
+        run: |
+          $output = C:\cg\bin\bash.exe --login -c 'echo foobar'
+          $($output -eq 'foobar') -or $(throw $output)
+
+      - name: Run cmake
+        run: |
+          C:\cg\bin\cmake.exe --version
