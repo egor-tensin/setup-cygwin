@@ -56,3 +56,7 @@ runs:
             throw "Sorry, installing Cygwin is unsupported on $os"
         }
       shell: pwsh
+
+branding:
+  icon: star
+  color: green
