@@ -25,6 +25,9 @@ the `packages` parameter.
 Set the installation directory using the `install-dir` parameter (C:\tools\cygwin
 is the default).
 
+The `CYGWIN` environment variable is set to an empty string by default.
+Provide a custom value using the `env` parameter.
+
 API
 ---
 
@@ -36,6 +39,8 @@ API
 |             | *Other* | No      | Install to the specified directory.
 | packages    | *Empty* | Yes     | Don't install any additional packages.
 |             | *Other* | No      | Space-separated package names.
+| env         | *Empty* | Yes     | Set `%CYGWIN%` to an empty string.
+|             | *Other* | No      | Set `%CYGWIN%` to the specified value.
 
 The paths to the Cygwin binaries are added to the PATH variable.
 
