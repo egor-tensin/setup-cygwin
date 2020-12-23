@@ -18,11 +18,14 @@ jobs:
         env: ['', 'winsymlinks:nativestrict']
 
         include:
-          - {os: windows-2019, name: Windows Server 2019}
+          - {os: windows-2019, name: 'Windows 2019'}
+
+          - {env: '', env_descr: 'Empty %CYGWIN%'}
+          - {env: 'winsymlinks:nativestrict', env_descr: 'Custom %CYGWIN%'}
 
     runs-on: '${{ matrix.os }}'
 
-    name: '${{ matrix.name }} / ${{ matrix.platform }}'
+    name: '${{ matrix.name }} / ${{ matrix.platform }} / ${{ matrix.env_descr }}'
 
     defaults:
       run:
