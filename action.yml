@@ -13,6 +13,9 @@ inputs:
   packages:
     description: Packages to install, separated by a space
     required: false
+  env:
+    description: Value to set as the CYGWIN environment variable
+    required: false
 
 runs:
   using: composite
@@ -27,7 +30,7 @@ runs:
         New-Variable packages -Value '${{ inputs.packages}}' -Option Constant
 
         if ($windows_host) {
-            echo 'CYGWIN=winsymlinks:nativestrict' >> $env:GITHUB_ENV
+            echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
 
             $choco_params = @(
                 'install',
