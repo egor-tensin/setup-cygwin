@@ -27,7 +27,7 @@ runs:
 
         New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
-        New-Variable packages -Value '${{ inputs.packages}}' -Option Constant
+        New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
 
         if ($windows_host) {
             echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
