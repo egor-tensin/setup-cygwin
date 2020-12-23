@@ -11,7 +11,7 @@ This is a GitHub action that sets up Cygwin in your workflow run.
 Use it in your workflow like this:
 
     - name: Set up Cygwin
-      uses: egor-tensin/setup-cygwin@v1
+      uses: egor-tensin/setup-cygwin@v2
       with:
         platform: x64
         packages: cmake python3
