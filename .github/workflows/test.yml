@@ -15,6 +15,7 @@ jobs:
       matrix:
         os: [windows-2019]
         platform: [x86, x64]
+        env: ['', 'winsymlinks:nativestrict']
 
         include:
           - {os: windows-2019, name: Windows Server 2019}
@@ -38,6 +39,7 @@ jobs:
           platform: '${{ matrix.platform }}'
           install-dir: C:\cg
           packages: cmake gcc
+          env: '${{ matrix.env }}'
 
       - name: Run bash
         run: |
@@ -47,3 +49,8 @@ jobs:
       - name: Run cmake
         run: |
           C:\cg\bin\cmake.exe --version
+
+      - name: Check CYGWIN environment variable
+        run: |
+          $(Test-Path env:CYGWIN) -or $(throw '%CYGWIN% is not set!')
+          $($env:CYGWIN -eq '${{ matrix.env }}') -or $(throw "Unexpected %CYGWIN% value: $env:CYGWIN")
