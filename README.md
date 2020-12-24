@@ -16,16 +16,13 @@ Use it in your workflow like this:
         platform: x64
         packages: cmake python3
 
-`x64` is the default value for the `platform` parameter and can be omitted.
+* `x64` is the default value for the `platform` parameter and can be omitted.
 Use `x86` if you want to install the 32-bit Cygwin.
-
-Specify any additional packages to be installed as a space-separated list in
+* Specify any additional packages to be installed as a space-separated list in
 the `packages` parameter.
-
-Set the installation directory using the `install-dir` parameter (C:\tools\cygwin
-is the default).
-
-The `CYGWIN` environment variable is set to an empty string by default.
+* Set the installation directory using the `install-dir` parameter
+(C:\tools\cygwin is the default).
+* The `CYGWIN` environment variable is set to an empty string by default.
 Provide a custom value using the `env` parameter.
 
 API
