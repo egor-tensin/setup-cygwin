@@ -46,9 +46,9 @@ runs:
             # Assuming that Cygwin is not installed when this is run.
             choco.exe $choco_params
 
-            echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
             # /usr/bin is really just /bin on Cygwin.
             echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
+            echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
 
             $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
 
