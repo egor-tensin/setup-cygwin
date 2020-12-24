@@ -29,8 +29,19 @@ runs:
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
         New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
 
+        function Locate-Choco {
+            $path = Get-Command 'choco' -ErrorAction SilentlyContinue
+            if ($path) {
+                $path.Path
+            } else {
+                Join-Path ${env:ProgramData} 'chocolatey' 'bin' 'choco'
+            }
+        }
+
         if ($windows_host) {
             echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
+
+            $choco = Locate-Choco
 
             $choco_params = @(
                 'install',
@@ -44,7 +55,7 @@ runs:
             $choco_params += 'cygwin'
 
             # Assuming that Cygwin is not installed when this is run.
-            choco.exe $choco_params
+            & $choco $choco_params
 
             # /usr/bin is really just /bin on Cygwin.
             echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
@@ -53,7 +64,7 @@ runs:
             $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
 
             if ($pkg_list.Count -gt 0) {
-                choco.exe install -y --no-progress --source=cygwin $pkg_list
+                & $choco install -y --no-progress --source=cygwin $pkg_list
             }
         } else {
             throw "Sorry, installing Cygwin is unsupported on $os"
