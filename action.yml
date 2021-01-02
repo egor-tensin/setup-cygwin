@@ -16,6 +16,10 @@ inputs:
   env:
     description: Value to set as the CYGWIN environment variable
     required: false
+  symlinks-to-hardlinks:
+    description: Convert symlinks in /usr/bin to hardlinks
+    required: false
+    default: 0
 
 runs:
   using: composite
@@ -28,6 +32,14 @@ runs:
         New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
         New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
+        New-Variable symlinks_to_hardlinks -Value ('${{ inputs.symlinks-to-hardlinks }}' -eq '1') -Option Constant
+
+        New-Variable bin_dir -Value (Join-Path $install_dir bin) -Option Constant
+        New-Variable realpath -Value (Join-Path $bin_dir realpath.exe) -Option Constant
+        New-Variable readlink -Value (Join-Path $bin_dir readlink.exe) -Option Constant
+        New-Variable dirname -Value (Join-Path $bin_dir dirname.exe) -Option Constant
+        New-Variable cygpath -Value (Join-Path $bin_dir cygpath.exe) -Option Constant
+        New-Variable find -Value (Join-Path $bin_dir find.exe) -Option Constant
 
         function Locate-Choco {
             $path = Get-Command 'choco' -ErrorAction SilentlyContinue
@@ -36,6 +48,48 @@ runs:
             } else {
                 Join-Path ${env:ProgramData} 'chocolatey' 'bin' 'choco'
             }
+        }
+
+        function Convert-CygwinPath {
+            # Like cygpath -wa, but don't resolve symlinks.
+            param(
+                [Parameter(Mandatory=$true)]
+                [string] $Path
+            )
+
+            $realpath = & $script:realpath --no-symlinks -- $Path
+            $dirname = & $script:dirname -- $realpath
+            $dirname = & $script:cygpath -wa $dirname
+            Join-Path $dirname (Split-Path $realpath -Leaf)
+        }
+
+        function Fix-CygwinLink {
+            # Replace a Cygwin symlink with a hardlink.
+            param(
+                [Parameter(Mandatory=$true)]
+                [string] $Path
+            )
+
+            $link_path = $Path
+            $link_winpath = Convert-CygwinPath $link_path
+            $link_ext = [System.IO.Path]::GetExtension($link_path)
+
+            $dest_path = & $script:readlink --canonicalize-existing -- $link_path
+            $dest_winpath = Convert-CygwinPath $dest_path
+            $dest_ext = [System.IO.Path]::GetExtension($dest_path)
+
+            echo "Removing symlink: $link_winpath"
+            Remove-Item $link_winpath -Force
+
+            # If target is an executable (i.e. its name contains one of the
+            # PATHEXT extensions), make sure the hardlink has the same
+            # extension.
+            $exe_exts = $env:PATHEXT.ToLower().Split(';', [System.StringSplitOptions]::RemoveEmptyEntries)
+            if ($exe_exts -contains $dest_ext.ToLower() -and $dest_ext.ToLower() -ne $link_ext.ToLower()) {
+                $link_winpath += $dest_ext
+            }
+            echo "Creating hardlink '$link_winpath', pointing to '$dest_winpath'"
+            New-Item -ItemType HardLink -Path $link_winpath -Value $dest_winpath | Out-Null
         }
 
         if ($windows_host) {
@@ -65,6 +119,10 @@ runs:
 
             if ($pkg_list.Count -gt 0) {
                 & $choco install -y --no-progress --source=cygwin $pkg_list
+            }
+
+            if ($symlinks_to_hardlinks) {
+                & $find /usr/bin -type l | %{ Fix-CygwinLink $_ }
             }
         } else {
             throw "Sorry, installing Cygwin is unsupported on $os"

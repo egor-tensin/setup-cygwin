@@ -13,19 +13,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019]
         platform: [x86, x64]
         env: ['', 'winsymlinks:nativestrict']
+        hardlinks: [0, 1]
 
         include:
-          - {os: windows-2019, name: 'Windows 2019'}
+          - {env: '', env_descr: 'nativestrict: 0'}
+          - {env: 'winsymlinks:nativestrict', env_descr: 'nativestrict: 1'}
 
-          - {env: '', env_descr: 'Empty %CYGWIN%'}
-          - {env: 'winsymlinks:nativestrict', env_descr: 'Custom %CYGWIN%'}
+          - {hardlinks: 0, hardlinks_descr: 'Hardlinks: 0'}
+          - {hardlinks: 1, hardlinks_descr: 'Hardlinks: 1'}
 
-    runs-on: '${{ matrix.os }}'
+    runs-on: windows-2019
 
-    name: '${{ matrix.name }} / ${{ matrix.platform }} / ${{ matrix.env_descr }}'
+    name: '${{ matrix.platform }} / ${{ matrix.env_descr }} / ${{ matrix.hardlinks_descr }}'
 
     defaults:
       run:
@@ -35,25 +36,43 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Clean up PATH
+        uses: egor-tensin/cleanup-path@v1
+        if: runner.os == 'Windows'
+
       - name: Set up Cygwin
         id: setup
         uses: ./
         with:
           platform: '${{ matrix.platform }}'
           install-dir: C:\cg
-          packages: cmake gcc
+          packages: cmake gcc python3
           env: '${{ matrix.env }}'
+          symlinks-to-hardlinks: '${{ matrix.hardlinks }}'
 
       - name: Run bash
         run: |
-          $output = C:\cg\bin\bash.exe --login -c 'echo foobar'
+          $((Get-Command bash.exe).Path -eq 'C:\cg\bin\bash.exe') -or $(throw (Get-Command bash.exe))
+          $output = bash.exe --login -c 'echo foobar'
           $($output -eq 'foobar') -or $(throw $output)
 
       - name: Run cmake
         run: |
-          C:\cg\bin\cmake.exe --version
+          $((Get-Command cmake.exe).Path -eq 'C:\cg\bin\cmake.exe') -or $(throw (Get-Command cmake.exe))
+          cmake.exe --version
 
       - name: Check CYGWIN environment variable
         run: |
           $(Test-Path env:CYGWIN) -or $(throw '%CYGWIN% is not set!')
           $($env:CYGWIN -eq '${{ matrix.env }}') -or $(throw "Unexpected %CYGWIN% value: $env:CYGWIN")
+
+      - name: python3 is a symlink
+        run: |
+          $(Get-Command python3.exe -ErrorAction SilentlyContinue) -and $(throw (Get-Command python3.exe))
+        if: '!matrix.hardlinks'
+
+      - name: python3 is a hardlink
+        run: |
+          $((Get-Command python3.exe).Path -eq 'C:\cg\bin\python3.exe') -or $(throw (Get-Command python3.exe))
+          python3.exe --version
+        if: matrix.hardlinks
