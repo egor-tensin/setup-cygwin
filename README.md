@@ -24,12 +24,6 @@ the `packages` parameter.
 (C:\tools\cygwin is the default).
 * The `CYGWIN` environment variable is set to an empty string by default.
 Provide a custom value using the `env` parameter.
-* Some packages install symlinks in /usr/bin along with real executables.
-An example is package python3, which (as of January 2021) installs symlink
-"python3", pointing to the real executable "python3.8.exe".
-Calling Cygwin symlinks from Windows' command prompt is unsupported, but
-there's an option to convert them to hardlinks instead (the `hardlinks`
-parameter).
 
 API
 ---
@@ -48,6 +42,16 @@ API
 |             | 1       | No      | Convert symlinks in /usr/bin to hardlinks.
 
 The paths to the Cygwin binaries are added to the PATH variable.
+
+Notes
+-----
+
+1. Some packages install symlinks in /usr/bin along with real executables.
+An example is package "python3", which (as of January 2021) installs symlink
+`python3`, pointing to the real executable `python3.8.exe`.
+Calling Cygwin symlinks from Windows' command prompt is unsupported, but might
+be convenient (e.g. if you don't know the exact Python version), so there's an
+option to convert them to hardlinks instead (the `hardlinks` parameter).
 
 License
 -------
