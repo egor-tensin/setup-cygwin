@@ -32,9 +32,10 @@ runs:
         New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
         New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
-        New-Variable symlinks_to_hardlinks -Value ('${{ inputs.symlinks-to-hardlinks }}' -eq '1') -Option Constant
 
-        New-Variable bash -Value (Join-Path $install_dir bin bash.exe) -Option Constant
+        if (!$windows_host) {
+            throw "Sorry, installing Cygwin is unsupported on $os"
+        }
 
         function Locate-Choco {
             $path = Get-Command 'choco' -ErrorAction SilentlyContinue
@@ -45,37 +46,39 @@ runs:
             }
         }
 
-        if ($windows_host) {
-            echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
+        echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
 
-            $choco = Locate-Choco
+        $choco = Locate-Choco
+        $choco_params = @(
+            'install',
+            '-y',
+            '--no-progress',
+            '--params', "/InstallDir:$install_dir"
+        )
+        if (!$x64) {
+            $choco_params += '--x86'
+        }
+        $choco_params += 'cygwin'
+        # Assuming that Cygwin is not installed when this is run.
+        & $choco $choco_params
 
-            $choco_params = @(
-                'install',
-                '-y',
-                '--no-progress',
-                '--params', "/InstallDir:$install_dir"
-            )
-            if (!$x64) {
-                $choco_params += '--x86'
-            }
-            $choco_params += 'cygwin'
+        # /usr/bin is really just /bin on Cygwin.
+        echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
+        echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
 
-            # Assuming that Cygwin is not installed when this is run.
-            & $choco $choco_params
+        $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
+        if ($pkg_list.Count -gt 0) {
+            & $choco install -y --no-progress --source=cygwin $pkg_list
+        }
+      shell: pwsh
 
-            # /usr/bin is really just /bin on Cygwin.
-            echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
-            echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
+    - run: |
+        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
+        New-Variable symlinks_to_hardlinks -Value ('${{ inputs.symlinks-to-hardlinks }}' -eq '1') -Option Constant
 
-            $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
-
-            if ($pkg_list.Count -gt 0) {
-                & $choco install -y --no-progress --source=cygwin $pkg_list
-            }
-
-            if ($symlinks_to_hardlinks) {
-                echo @'
+        if ($symlinks_to_hardlinks) {
+            New-Variable bash -Value (Join-Path $install_dir bin bash.exe) -Option Constant
+            echo @'
         while IFS= read -d '' -r link_path; do
             dest_path="$( readlink --canonicalize-existing -- "$link_path" )"
             dest_ext=".${dest_path##*.}"
@@ -88,9 +91,6 @@ runs:
             echo "Creating hardlink $link_path -> $dest_path" && ln -- "$dest_path" "$link_path"
         done < <( find /usr/bin -type l -print0 )
         '@ | & $bash --login -o errexit -o nounset -o pipefail -o igncr
-            }
-        } else {
-            throw "Sorry, installing Cygwin is unsupported on $os"
         }
       shell: pwsh
 
