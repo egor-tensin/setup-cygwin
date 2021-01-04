@@ -26,16 +26,21 @@ runs:
   steps:
     - run: |
         New-Variable os -Value ('${{ runner.os }}') -Option Constant
-
         New-Variable windows_host -Value ($os -eq 'Windows') -Option Constant
-
-        New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
-        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
-        New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
 
         if (!$windows_host) {
             throw "Sorry, installing Cygwin is unsupported on $os"
         }
+      shell: pwsh
+
+    - run: |
+        echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
+      shell: pwsh
+
+    - run: |
+        New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
+        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
+        New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
 
         function Locate-Choco {
             $path = Get-Command 'choco' -ErrorAction SilentlyContinue
@@ -45,8 +50,6 @@ runs:
                 Join-Path ${env:ProgramData} 'chocolatey' 'bin' 'choco'
             }
         }
-
-        echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
 
         $choco = Locate-Choco
         $choco_params = @(
