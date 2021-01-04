@@ -48,7 +48,7 @@ jobs:
           install-dir: C:\cg
           packages: cmake gcc python3
           env: '${{ matrix.env }}'
-          symlinks-to-hardlinks: '${{ matrix.hardlinks }}'
+          hardlinks: '${{ matrix.hardlinks }}'
 
       - name: Run bash
         run: |

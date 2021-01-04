@@ -16,7 +16,7 @@ inputs:
   env:
     description: Value to set as the CYGWIN environment variable
     required: false
-  symlinks-to-hardlinks:
+  hardlinks:
     description: Convert symlinks in /usr/bin to hardlinks
     required: false
     default: 0
@@ -77,9 +77,9 @@ runs:
 
     - run: |
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
-        New-Variable symlinks_to_hardlinks -Value ('${{ inputs.symlinks-to-hardlinks }}' -eq '1') -Option Constant
+        New-Variable hardlinks -Value ('${{ inputs.hardlinks }}' -eq '1') -Option Constant
 
-        if ($symlinks_to_hardlinks) {
+        if ($hardlinks) {
             New-Variable bash -Value (Join-Path $install_dir bin bash.exe) -Option Constant
             echo @'
         while IFS= read -d '' -r link_path; do
