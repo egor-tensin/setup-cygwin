@@ -53,15 +53,15 @@ runs:
 
         $choco = Locate-Choco
         $choco_params = @(
-            'install',
+            'upgrade',
+            'cygwin',
             '-y',
             '--no-progress',
-            '--params', "/InstallDir:$install_dir"
+            "--package-parameters='/InstallDir:$install_dir'"
         )
         if (!$x64) {
             $choco_params += '--x86'
         }
-        $choco_params += 'cygwin'
         # Assuming that Cygwin is not installed when this is run.
         & $choco $choco_params
 
@@ -71,7 +71,7 @@ runs:
 
         $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
         if ($pkg_list.Count -gt 0) {
-            & $choco install -y --no-progress --source=cygwin $pkg_list
+            & $choco install $pkg_list -y --no-progress --source=cygwin
         }
       shell: pwsh
 
