@@ -8,13 +8,18 @@ This is a GitHub action that sets up Cygwin in your workflow run.
 1. Installs Cygwin.
 2. Installs any additional packages specified.
 
-Use it in your workflow like this:
+Use it in your workflow [like this](https://github.com/egor-tensin/setup-cygwin/blob/d9b45e8ed212b486afdc30a87191d126295a992e/.github/workflows/test.yml#L79):
 
     - name: Set up Cygwin
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
         packages: cmake python3
+    - name: Run basic commands
+      run: |
+        ls -Al
+        pwd
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
 * `x64` is the default value for the `platform` parameter and can be omitted.
 Use `x86` if you want to install the 32-bit Cygwin.
