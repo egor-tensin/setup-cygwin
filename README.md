@@ -16,6 +16,20 @@ Use it in your workflow like this:
         platform: x64
         packages: cmake python3
 
+    # Cygwin executables are added to PATH, so you can call them directly:
+    - run: |
+        ls.exe -Al
+        pwd.exe
+
+    # Alternatively, you can use Cygwin's bash as shell to write proper bash scripts:
+    - run: |
+        basic() {
+            ls -Al
+            pwd
+        }
+        basic
+      shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
 * `x64` is the default value for the `platform` parameter and can be omitted.
 Use `x86` if you want to install the 32-bit Cygwin.
 * Specify any additional packages to be installed as a space-separated list in
