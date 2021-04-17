@@ -1,7 +1,7 @@
 Set up Cygwin
 =============
 
-[![Test](https://github.com/egor-tensin/setup-cygwin/workflows/Test/badge.svg)](https://github.com/egor-tensin/setup-cygwin/actions?query=workflow%3ATest)
+[![Test](https://github.com/egor-tensin/setup-cygwin/actions/workflows/test.yml/badge.svg)](https://github.com/egor-tensin/setup-cygwin/actions/workflows/test.yml)
 
 This is a GitHub action that sets up Cygwin in your workflow run.
 
