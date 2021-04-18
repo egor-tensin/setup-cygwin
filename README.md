@@ -3,7 +3,7 @@ Set up Cygwin
 
 [![Test](https://github.com/egor-tensin/setup-cygwin/actions/workflows/test.yml/badge.svg)](https://github.com/egor-tensin/setup-cygwin/actions/workflows/test.yml)
 
-This is a GitHub action that sets up Cygwin in your workflow run.
+This GitHub action sets up Cygwin in your workflow run.
 
 1. Installs Cygwin.
 2. Installs any additional packages specified.
@@ -45,14 +45,14 @@ API
 | Input       | Value   | Default | Description
 | ----------- | ------- | ------- | -----------
 | platform    | x64     | ✓       | Install the 64-bit version.
-|             | *Other* |         | Install the 32-bit version.
-| install-dir | *Empty* | ✓       | Install to C:\tools\cygwin.
-|             | *Other* |         | Install to the specified directory.
-| packages    | *Empty* | ✓       | Don't install any additional packages.
-|             | *Other* |         | Space-separated package names.
-| env         | *Empty* | ✓       | Set `%CYGWIN%` to an empty string.
-|             | *Other* |         | Set `%CYGWIN%` to the specified value.
-| hardlinks   | *Other* | ✓       | Don't convert any symlinks.
+|             | *any*   |         | Install the 32-bit version.
+| install-dir | *empty* | ✓       | Install to C:\tools\cygwin.
+|             | *any*   |         | Install to the specified directory.
+| packages    | *empty* | ✓       | Don't install any additional packages.
+|             | *any*   |         | Space-separated package names.
+| env         | *empty* | ✓       | Set `%CYGWIN%` to an empty string.
+|             | *any*   |         | Set `%CYGWIN%` to the specified value.
+| hardlinks   | *any*   | ✓       | Don't convert any symlinks.
 |             | 1       |         | Convert symlinks in /usr/bin to hardlinks.
 
 The paths to the Cygwin binaries are added to the PATH variable.
