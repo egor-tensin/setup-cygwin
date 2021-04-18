@@ -44,16 +44,16 @@ API
 
 | Input       | Value   | Default | Description
 | ----------- | ------- | ------- | -----------
-| platform    | x64     | Yes     | Install the 64-bit version.
-|             | *Other* | No      | Install the 32-bit version.
-| install-dir | *Empty* | Yes     | Install to C:\tools\cygwin.
-|             | *Other* | No      | Install to the specified directory.
-| packages    | *Empty* | Yes     | Don't install any additional packages.
-|             | *Other* | No      | Space-separated package names.
-| env         | *Empty* | Yes     | Set `%CYGWIN%` to an empty string.
-|             | *Other* | No      | Set `%CYGWIN%` to the specified value.
-| hardlinks   | *Other* | Yes     | Don't convert any symlinks.
-|             | 1       | No      | Convert symlinks in /usr/bin to hardlinks.
+| platform    | x64     | ✓       | Install the 64-bit version.
+|             | *Other* |         | Install the 32-bit version.
+| install-dir | *Empty* | ✓       | Install to C:\tools\cygwin.
+|             | *Other* |         | Install to the specified directory.
+| packages    | *Empty* | ✓       | Don't install any additional packages.
+|             | *Other* |         | Space-separated package names.
+| env         | *Empty* | ✓       | Set `%CYGWIN%` to an empty string.
+|             | *Other* |         | Set `%CYGWIN%` to the specified value.
+| hardlinks   | *Other* | ✓       | Don't convert any symlinks.
+|             | 1       |         | Convert symlinks in /usr/bin to hardlinks.
 
 The paths to the Cygwin binaries are added to the PATH variable.
 
