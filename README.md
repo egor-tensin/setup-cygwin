@@ -61,8 +61,9 @@ The paths to the Cygwin binaries are added to the PATH variable.
 Line terminators
 ----------------
 
-When using Cygwin's `bash` as the shell to run the step script, make sure that
-`igncr` is present in the SHELLOPTS variable be either:
+When using Cygwin's `bash` as the shell to run the step script (or if you see
+something like `\r': command not found` in logs), make sure that `igncr` is
+present in the SHELLOPTS variable be either:
 
 * passing `-o igncr` to bash.exe,
 
