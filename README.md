@@ -21,8 +21,9 @@ Use it in your workflow like this:
         ls.exe -Al
         pwd.exe
 
-    # Alternatively, you can use Cygwin's bash as shell to write proper bash scripts:
+    # Alternatively, you can set Cygwin's bash as the shell to use:
     - run: |
+        # This is a real bash script!
         basic() {
             ls -Al
             pwd
@@ -57,10 +58,43 @@ API
 
 The paths to the Cygwin binaries are added to the PATH variable.
 
-Notes
------
+Line terminators
+----------------
 
-1. Some packages install symlinks in /usr/bin along with real executables.
+When using Cygwin's `bash` as the shell to run the step script, make sure that
+`igncr` is present in the SHELLOPTS variable be either:
+
+* passing `-o igncr` to bash.exe,
+
+      job:
+        name: Test job
+        runs-on: windows-latest
+        defaults:
+          run:
+            shell: C:\tools\cygwin\bin\bash.exe --login -o igncr '{0}'
+        steps:
+          - ...
+
+* or setting the SHELLOPTS variable in the `env:` block.
+
+      job:
+        name: Test job
+        runs-on: windows-latest
+        env:
+          SHELLOPTS: igncr
+        defaults:
+          run:
+            shell: C:\tools\cygwin\bin\bash.exe --login '{0}'
+        steps:
+          - ...
+
+Please avoid using \r\n as line separators in your shell scripts, as Linux
+shells will choke on them.
+
+Executable symlinks
+-------------------
+
+Some packages install symlinks in /usr/bin along with real executables.
 An example is package "python3", which (as of January 2021) installs symlink
 `python3`, pointing to the real executable `python3.8.exe`.
 Calling Cygwin symlinks from Windows' command prompt is unsupported, but might
