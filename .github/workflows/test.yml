@@ -76,8 +76,8 @@ jobs:
           python3.exe --version
         if: matrix.hardlinks
 
-  shell:
-    name: 'shell:'
+  shell_igncr:
+    name: 'shell: -o igncr'
     runs-on: windows-2019
     steps:
       - name: Checkout
@@ -98,3 +98,28 @@ jobs:
           }
           basic
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
+
+  shell_shellopts:
+    name: 'shell: SHELLOPTS'
+    runs-on: windows-2019
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Clean up PATH
+        uses: egor-tensin/cleanup-path@v1
+        if: runner.os == 'Windows'
+
+      - name: Set up Cygwin
+        uses: ./
+
+      - name: Run basic commands
+        run: |
+          basic() {
+              ls -Al
+              pwd
+          }
+          basic
+        shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail '{0}'
+        env:
+          SHELLOPTS: igncr
