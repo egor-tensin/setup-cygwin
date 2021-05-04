@@ -77,8 +77,8 @@ jobs:
         if: matrix.hardlinks
 
   shell_igncr:
-    name: 'shell: -o igncr'
     runs-on: windows-2019
+    name: 'shell: -o igncr'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -100,8 +100,8 @@ jobs:
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
   shell_shellopts:
-    name: 'shell: SHELLOPTS'
     runs-on: windows-2019
+    name: 'shell: SHELLOPTS'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
