@@ -24,7 +24,7 @@ jobs:
           - {hardlinks: 0, hardlinks_descr: 'Hardlinks: 0'}
           - {hardlinks: 1, hardlinks_descr: 'Hardlinks: 1'}
 
-    runs-on: windows-2019
+    runs-on: windows-latest
 
     name: '${{ matrix.platform }} / ${{ matrix.env_descr }} / ${{ matrix.hardlinks_descr }}'
 
@@ -77,7 +77,7 @@ jobs:
         if: matrix.hardlinks
 
   shell_igncr:
-    runs-on: windows-2019
+    runs-on: windows-latest
     name: 'shell: -o igncr'
     steps:
       - name: Checkout
@@ -100,7 +100,7 @@ jobs:
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
   shell_shellopts:
-    runs-on: windows-2019
+    runs-on: windows-latest
     name: 'shell: SHELLOPTS'
     steps:
       - name: Checkout
