@@ -45,7 +45,7 @@ jobs:
         with:
           platform: '${{ matrix.platform }}'
           install-dir: C:\cg
-          packages: cmake gcc
+          packages: cmake gcc-g++
           env: '${{ matrix.env }}'
           hardlinks: '${{ matrix.hardlinks }}'
 

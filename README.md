@@ -96,8 +96,8 @@ Executable symlinks
 -------------------
 
 Some packages install symlinks in /usr/bin along with real executables.
-An example is package "gcc", which (as of November 2021) installs symlink `cc`,
-pointing to the real executable `gcc.exe`.
+An example is package "gcc-core", which (as of November 2021) installs symlink
+`cc`, pointing to the real executable `gcc.exe`.
 Calling Cygwin symlinks from Windows' command prompt is unsupported, but might
 be convenient so there's an option to convert them to hardlinks instead (the
 `hardlinks` parameter).
