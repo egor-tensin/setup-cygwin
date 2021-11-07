@@ -14,7 +14,7 @@ Use it in your workflow like this:
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
-        packages: cmake gcc
+        packages: cmake gcc-g++
 
     # Cygwin executables are added to PATH, so you can call them directly:
     - run: |
