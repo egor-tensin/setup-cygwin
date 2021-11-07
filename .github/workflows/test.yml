@@ -45,7 +45,7 @@ jobs:
         with:
           platform: '${{ matrix.platform }}'
           install-dir: C:\cg
-          packages: cmake gcc python3
+          packages: cmake gcc
           env: '${{ matrix.env }}'
           hardlinks: '${{ matrix.hardlinks }}'
 
@@ -65,15 +65,15 @@ jobs:
           $(Test-Path env:CYGWIN) -or $(throw '%CYGWIN% is not set!')
           $($env:CYGWIN -eq '${{ matrix.env }}') -or $(throw "Unexpected %CYGWIN% value: $env:CYGWIN")
 
-      - name: python3 is a symlink
+      - name: cc is a symlink
         run: |
-          $(Get-Command python3.exe -ErrorAction SilentlyContinue) -and $(throw (Get-Command python3.exe))
+          $(Get-Command cc.exe -ErrorAction SilentlyContinue) -and $(throw (Get-Command cc.exe))
         if: '!matrix.hardlinks'
 
-      - name: python3 is a hardlink
+      - name: cc is a hardlink
         run: |
-          $((Get-Command python3.exe).Path -eq 'C:\cg\bin\python3.exe') -or $(throw (Get-Command python3.exe))
-          python3.exe --version
+          $((Get-Command cc.exe).Path -eq 'C:\cg\bin\cc.exe') -or $(throw (Get-Command cc.exe))
+          cc.exe --version
         if: matrix.hardlinks
 
   shell_igncr:

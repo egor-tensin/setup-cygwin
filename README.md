@@ -14,7 +14,7 @@ Use it in your workflow like this:
       uses: egor-tensin/setup-cygwin@v3
       with:
         platform: x64
-        packages: cmake python3
+        packages: cmake gcc
 
     # Cygwin executables are added to PATH, so you can call them directly:
     - run: |
@@ -96,11 +96,11 @@ Executable symlinks
 -------------------
 
 Some packages install symlinks in /usr/bin along with real executables.
-An example is package "python3", which (as of January 2021) installs symlink
-`python3`, pointing to the real executable `python3.8.exe`.
+An example is package "gcc", which (as of November 2021) installs symlink `cc`,
+pointing to the real executable `gcc.exe`.
 Calling Cygwin symlinks from Windows' command prompt is unsupported, but might
-be convenient (e.g. if you don't know the exact Python version), so there's an
-option to convert them to hardlinks instead (the `hardlinks` parameter).
+be convenient so there's an option to convert them to hardlinks instead (the
+`hardlinks` parameter).
 
 License
 -------
