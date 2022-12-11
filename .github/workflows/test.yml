@@ -34,10 +34,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Clean up PATH
-        uses: egor-tensin/cleanup-path@v1
+        uses: egor-tensin/cleanup-path@v3
         if: runner.os == 'Windows'
 
       - name: Set up Cygwin
@@ -81,10 +81,10 @@ jobs:
     name: 'shell: -o igncr'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Clean up PATH
-        uses: egor-tensin/cleanup-path@v1
+        uses: egor-tensin/cleanup-path@v3
         if: runner.os == 'Windows'
 
       - name: Set up Cygwin
@@ -104,10 +104,10 @@ jobs:
     name: 'shell: SHELLOPTS'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Clean up PATH
-        uses: egor-tensin/cleanup-path@v1
+        uses: egor-tensin/cleanup-path@v3
         if: runner.os == 'Windows'
 
       - name: Set up Cygwin
