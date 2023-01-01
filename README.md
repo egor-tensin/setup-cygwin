@@ -13,7 +13,6 @@ Use it in your workflow like this:
     - name: Set up Cygwin
       uses: egor-tensin/setup-cygwin@v3
       with:
-        platform: x64
         packages: cmake gcc-g++
 
     # Cygwin executables are added to PATH, so you can call them directly:
@@ -31,8 +30,6 @@ Use it in your workflow like this:
         basic
       shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail -o igncr '{0}'
 
-* `x64` is the default value for the `platform` parameter and can be omitted.
-Use `x86` if you want to install the 32-bit Cygwin.
 * Specify any additional packages to be installed as a space-separated list in
 the `packages` parameter.
 * Set the installation directory using the `install-dir` parameter
@@ -45,8 +42,6 @@ API
 
 | Input       | Value   | Default | Description
 | ----------- | ------- | ------- | -----------
-| platform    | x64     | ✓       | Install the 64-bit version.
-|             | *any*   |         | Install the 32-bit version.
 | install-dir | *empty* | ✓       | Install to C:\tools\cygwin.
 |             | *any*   |         | Install to the specified directory.
 | packages    | *empty* | ✓       | Don't install any additional packages.

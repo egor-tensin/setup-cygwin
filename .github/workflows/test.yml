@@ -13,7 +13,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [x86, x64]
         env: ['', 'winsymlinks:nativestrict']
         hardlinks: [0, 1]
 
@@ -26,7 +25,7 @@ jobs:
 
     runs-on: windows-latest
 
-    name: '${{ matrix.platform }} / ${{ matrix.env_descr }} / ${{ matrix.hardlinks_descr }}'
+    name: '${{ matrix.env_descr }} / ${{ matrix.hardlinks_descr }}'
 
     defaults:
       run:
@@ -43,7 +42,6 @@ jobs:
       - name: Set up Cygwin
         uses: ./
         with:
-          platform: '${{ matrix.platform }}'
           install-dir: C:\cg
           packages: cmake gcc-g++
           env: '${{ matrix.env }}'

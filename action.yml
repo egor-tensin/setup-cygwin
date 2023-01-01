@@ -2,10 +2,6 @@ name: Install Cygwin
 description: Install Cygwin & packages
 
 inputs:
-  platform:
-    description: Target platform
-    required: false
-    default: x64
   install-dir:
     description: Installation directory
     required: false
@@ -38,7 +34,6 @@ runs:
       shell: pwsh
 
     - run: |
-        New-Variable x64 -Value ('${{ inputs.platform }}' -eq 'x64') -Option Constant
         New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
         New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
 
@@ -65,9 +60,6 @@ runs:
             '--no-progress',
             "--package-parameters='/InstallDir:$install_dir'"
         )
-        if (!$x64) {
-            $choco_params += '--x86'
-        }
         # Assuming that Cygwin is not installed when this is run.
         & $choco $choco_params
 
