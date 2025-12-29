@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Clean up PATH
         uses: egor-tensin/cleanup-path@v3
@@ -79,7 +79,7 @@ jobs:
     name: 'shell: -o igncr'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Clean up PATH
         uses: egor-tensin/cleanup-path@v3
@@ -102,7 +102,7 @@ jobs:
     name: 'shell: SHELLOPTS'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Clean up PATH
         uses: egor-tensin/cleanup-path@v3
