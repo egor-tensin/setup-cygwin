@@ -48,11 +48,6 @@ runs:
 
         $choco = Locate-Choco
 
-        # WTF? Chocolatey versions past 1.1.0 don't work with --source=cygwin,
-        # they simply don't install anything.
-        # I made a bug: https://github.com/chocolatey/choco/issues/2953
-        & $choco install chocolatey --version 1.1.0 --allow-downgrade -y --no-progress
-
         $choco_params = @(
             'upgrade',
             'cygwin',
