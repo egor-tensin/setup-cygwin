@@ -42,14 +42,14 @@ API
 
 | Input       | Value   | Default | Description
 | ----------- | ------- | ------- | -----------
-| install-dir | *empty* | ✓       | Install to C:\tools\cygwin.
-|             | *any*   |         | Install to the specified directory.
-| packages    | *empty* | ✓       | Don't install any additional packages.
-|             | *any*   |         | Space-separated package names.
-| env         | *empty* | ✓       | Set `%CYGWIN%` to an empty string.
-|             | *any*   |         | Set `%CYGWIN%` to the specified value.
-| hardlinks   | *any*   | ✓       | Don't convert any symlinks.
-|             | 1       |         | Convert symlinks in /usr/bin to hardlinks.
+| install-dir | *empty* | ✓       | Install to C:\tools\cygwin
+|             | *any*   |         | Install to the specified directory
+| packages    | *empty* | ✓       | Don't install any additional packages
+|             | *any*   |         | Space-separated package names
+| env         | *empty* | ✓       | Set `%CYGWIN%` to an empty string
+|             | *any*   |         | Set `%CYGWIN%` to the specified value
+| hardlinks   | *any*   | ✓       | Don't convert any symlinks
+|             | 1       |         | Convert symlinks in /usr/bin to hardlinks
 
 The paths to the Cygwin binaries are added to the PATH variable.
 
