@@ -122,3 +122,19 @@ jobs:
         shell: C:\tools\cygwin\bin\bash.exe --login --norc -eo pipefail '{0}'
         env:
           SHELLOPTS: igncr
+
+  release:
+    if: github.ref_type == 'tag'
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - shell_igncr
+      - shell_shellopts
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Release
+        uses: softprops/action-gh-release@v3
