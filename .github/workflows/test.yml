@@ -16,24 +16,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        env: ['', 'winsymlinks:nativestrict']
-        hardlinks: [0, 1]
-
+        env:
+          - ''
+          - 'winsymlinks:nativestrict'
+        hardlinks:
+          - 0
+          - 1
         include:
           - {env: '', env_descr: 'nativestrict: 0'}
           - {env: 'winsymlinks:nativestrict', env_descr: 'nativestrict: 1'}
-
           - {hardlinks: 0, hardlinks_descr: 'Hardlinks: 0'}
           - {hardlinks: 1, hardlinks_descr: 'Hardlinks: 1'}
-
     runs-on: windows-latest
-
     name: ${{ matrix.env_descr }} / ${{ matrix.hardlinks_descr }}
-
     defaults:
       run:
         shell: pwsh
-
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -87,14 +85,11 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-
       - name: Clean up PATH
         uses: egor-tensin/cleanup-path@v5
         if: runner.os == 'Windows'
-
       - name: Set up Cygwin
         uses: $/
-
       - name: Run basic commands
         run: |
           basic() {
@@ -112,14 +107,11 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-
       - name: Clean up PATH
         uses: egor-tensin/cleanup-path@v5
         if: runner.os == 'Windows'
-
       - name: Set up Cygwin
         uses: $/
-
       - name: Run basic commands
         run: |
           basic() {
