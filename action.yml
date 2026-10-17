@@ -21,21 +21,23 @@ runs:
   using: composite
   steps:
     - run: |
-        New-Variable os -Value ('${{ runner.os }}') -Option Constant
-        New-Variable windows_host -Value ($os -eq 'Windows') -Option Constant
-
-        if (!$windows_host) {
+        if ('${{ runner.os }}' -ne 'Windows') {
             throw "Sorry, installing Cygwin is unsupported on $os"
         }
       shell: pwsh
 
-    - run: |
-        echo 'CYGWIN=${{ inputs.env }}' >> $env:GITHUB_ENV
+    - env:
+        ARG_ENV: ${{ inputs.env }}
+      run: |
+        echo "CYGWIN=$env:ARG_ENV" >> $env:GITHUB_ENV
       shell: pwsh
 
-    - run: |
-        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
-        New-Variable packages -Value '${{ inputs.packages }}' -Option Constant
+    - env:
+        ARG_INSTALL_DIR: ${{ inputs.install-dir }}
+        ARG_PACKAGES: ${{ inputs.packages }}
+      run: |
+        $install_dir = $env:ARG_INSTALL_DIR
+        $packages = $env:ARG_PACKAGES
 
         function Locate-Choco {
             $path = Get-Command 'choco' -ErrorAction SilentlyContinue
@@ -62,15 +64,18 @@ runs:
         echo (Join-Path $install_dir bin) >> $env:GITHUB_PATH
         echo (Join-Path $install_dir usr local bin) >> $env:GITHUB_PATH
 
-        $pkg_list = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
-        if ($pkg_list.Count -gt 0) {
-            & $choco install $pkg_list -y --no-progress --source=cygwin
+        $packages = $packages.Split(' ', [System.StringSplitOptions]::RemoveEmptyEntries)
+        if ($packages.Count -gt 0) {
+            & $choco install $packages -y --no-progress --source=cygwin
         }
       shell: pwsh
 
-    - run: |
-        New-Variable install_dir -Value '${{ inputs.install-dir }}' -Option Constant
-        New-Variable hardlinks -Value ('${{ inputs.hardlinks }}' -eq '1') -Option Constant
+    - env:
+        ARG_INSTALL_DIR: ${{ inputs.install-dir }}
+        ARG_HARDLINKS: ${{ inputs.hardlinks }}
+      run: |
+        $install_dir = $env:ARG_INSTALL_DIR
+        $hardlinks = $env:ARG_HARDLINKS -eq '1'
 
         if ($hardlinks) {
             New-Variable bash -Value (Join-Path $install_dir bin bash.exe) -Option Constant
