@@ -36,15 +36,15 @@ runs:
         ARG_INSTALL_DIR: ${{ inputs.install-dir }}
         ARG_PACKAGES: ${{ inputs.packages }}
       run: |
-        $install_dir = $env:ARG_INSTALL_DIR
-        $packages = $env:ARG_PACKAGES
+        $install_dir = (Get-ChildItem env:ARG_INSTALL_DIR).Value
+        $packages = (Get-ChildItem env:ARG_PACKAGES).Value
 
         function Locate-Choco {
             $path = Get-Command 'choco' -ErrorAction SilentlyContinue
             if ($path) {
                 $path.Path
             } else {
-                Join-Path ${env:ProgramData} 'chocolatey' 'bin' 'choco'
+                Join-Path (Get-ChildItem env:ProgramData).Value 'chocolatey' 'bin' 'choco'
             }
         }
 
@@ -74,8 +74,8 @@ runs:
         ARG_INSTALL_DIR: ${{ inputs.install-dir }}
         ARG_HARDLINKS: ${{ inputs.hardlinks }}
       run: |
-        $install_dir = $env:ARG_INSTALL_DIR
-        $hardlinks = $env:ARG_HARDLINKS -eq '1'
+        $install_dir = (Get-ChildItem env:ARG_INSTALL_DIR).Value
+        $hardlinks = (Get-ChildItem env:ARG_HARDLINKS).Value -eq '1'
 
         if ($hardlinks) {
             New-Variable bash -Value (Join-Path $install_dir bin bash.exe) -Option Constant
